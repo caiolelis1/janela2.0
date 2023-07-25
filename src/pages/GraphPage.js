@@ -1,9 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { tsv } from "d3";
-
+import { csv } from "d3";
 import { Chart } from "../components/Chart";
 import { FileContext } from "../context/fileContext";
 import { useNavigate } from "react-router-dom";
+
+export function getExtension(filename) {
+  return filename.split(".").pop();
+}
 
 export const GraphPage = () => {
   const [selectedFiles] = useContext(FileContext);
@@ -18,8 +22,10 @@ export const GraphPage = () => {
   useEffect(() => {
     if (selectedFiles.length === 0) navigate("/");
     for (let i = 0; i < selectedFiles.length; i++) {
-      tsv("`../../../files/" + selectedFiles[i])
-        .then((d) => {
+      let extension = getExtension(selectedFiles[i]);
+      if(extension === "txt"){
+        tsv("`../../../files/" + selectedFiles[i])
+        .then((d) => { //mapeia pra pegar as colunas
           setAuxData((auxData) => [...auxData, d]);
           const options = d.columns.map((column) => {
             return { value: column, label: column };
@@ -27,6 +33,18 @@ export const GraphPage = () => {
           setCollums(options);
         })
         .catch((err) => console.log(err));
+      }
+      else{
+        csv("`../../../files/" + selectedFiles[i])
+        .then((d) => { //mapeia pra pegar as colunas
+          setAuxData((auxData) => [...auxData, d]);
+          const options = d.columns.map((column) => {
+            return { value: column, label: column };
+          });
+          setCollums(options);
+        })
+        .catch((err) => console.log(err));
+      }
     }
   }, []);
 
@@ -53,17 +71,25 @@ export const GraphPage = () => {
 
   useEffect(() => {
     let aux = [];
-
     data.map((preFile) => {
       preFile.map((files) =>
         files.map((file, i) => {
           aux.push([]);
           file.map((fileData) => {
-            aux[i].push({
-              filename: selectedFiles[i],
-              x: fileData["TIMER"],
-              y: fileData[selectedCollum],
-            });
+            if(getExtension(selectedFiles[i]) === "csv"){
+              aux[i].push({
+                filename: selectedFiles[i],
+                x: fileData["time"],
+                y: fileData[selectedCollum],
+              });
+            }
+            else{
+                aux[i].push({
+                  filename: selectedFiles[i],
+                  x: fileData["TIMER"],
+                  y: fileData[selectedCollum],
+                });
+            }
           });
         })
       );

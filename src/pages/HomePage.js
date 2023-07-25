@@ -9,7 +9,6 @@ export const HomePage = () => {
   const [selectVal] = useState("");
   const [selectedFiles, setSelectedFiles] = useContext(FileContext);
   const navigate = useNavigate();
-
   const listFiles = () => {
     axios.get("http://localhost:3004/files").then((res) => {
       const files = res.data;

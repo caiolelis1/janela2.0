@@ -1,29 +1,33 @@
 import React, { useEffect, useRef } from "react";
 import * as d3 from "d3";
 
+const MARGIN = { top: 10, left: 40, right: 80, bottom: 1 };
+
+
+var windowWidth = window.innerWidth - 170;
+var vw = windowWidth / 100;
+
+var graphWidth = windowWidth - 8 * vw;
+
 export const Chart = (props) => {
   const { data, filename } = props;
   const svgRef = useRef();
-
-  console.log(data);
 
   var colors = ["blue", "red", "green"];
 
   useEffect(() => {
     //setting up svg
-
-    const w = 1600;
-    const h = 300;
+    const h = 200; 
     const svg = d3
       .select(svgRef.current)
-      .attr("width", w)
-      .attr("height", h)
+      .attr("width", graphWidth + MARGIN.left + MARGIN.right)
+      .attr("height", h + MARGIN.top + MARGIN.bottom)
       .style("margin-top", "50")
       .style("margin-left", "50")
-      .style("overflow", "visible");
+      .style("overflow", "visible")
 
     //setting the scaling
-    const xScale = d3.scaleLinear().domain([0, 100000]).range([0, w]);
+    const xScale = d3.scaleLinear().domain([0, 100000]).range([0, graphWidth]);
     const yScale = d3
       .scaleLinear()
       .domain([0, d3.max(data, (series) => d3.max(series, (d) => d.y))])
@@ -39,6 +43,7 @@ export const Chart = (props) => {
       .line()
       .x((d) => xScale(d.x))
       .y((d) => yScale(d.y));
+      
     //setting up the data for the svg
 
     svg
@@ -50,7 +55,8 @@ export const Chart = (props) => {
       .attr("fill", "none")
       .attr("stroke", (d, i) => colors[i])
       .attr("stroke-width", 2)
-      .attr("d", line);
+      .attr("d", line)
+
   }, [data]);
 
   return (

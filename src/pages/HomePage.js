@@ -48,7 +48,9 @@ export const HomePage = () => {
           <h1 className="text-6xl font-semibold p-3">Análise de Dados</h1>
           <h3 className="text-3xl p-1">Fórmula Tesla UFMG</h3>
         </div>
-        <div className="w-2/3 m-auto flex">
+        <br>
+        </br>
+        <div className="w-1/4 m-auto flex">
           <select
             name="file"
             value={selectVal}
@@ -75,9 +77,11 @@ export const HomePage = () => {
             </div>
           ))}
         </div>
-        <div className="w-1/5 m-auto">
+        <br>
+        </br>
+        <div className="w-1/6 m-auto flex">
           <button
-            className="bg-teslagreen text-white px-4 py-2 rounded hover:bg-teslagreen/90"
+            className="bg-teslagreen text-white px-3 py-3  rounded hover:bg-teslagreen/90"
             onClick={() => handleClick()}
           >
             Gerar gráficos
